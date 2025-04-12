@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: Block Explorer API
+  version: 1.0.0
+  description: API untuk block explorer di testnet/mainnet
+servers:
+  - url: http://localhost:5000
+paths:
+  /api/latest-blocks:
+    get:
+      summary: Mendapatkan daftar blok terbaru
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Jumlah blok yang diambil (maksimal 50)
+      responses:
+        '200':
+          description: Daftar blok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    number: { type: integer }
+                    hash: { type: string }
+                    timestamp: { type: integer }
+                    transactions: { type: integer }
+        '500':
+          description: Server error
+  /api/transaction/{hash}:
+    get:
+      summary: Mendapatkan detail transaksi
+      parameters:
+        - in: path
+          name: hash
+          required: true
+          schema:
+            type: string
+          description: Hash transaksi
+      responses:
+        '200':
+          description: Detail transaksi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hash: { type: string }
+                  from: { type: string }
+                  to: { type: string }
+                  value: { type: string }
+                  gas: { type: integer }
+                  gasPrice: { type: string }
+                  blockNumber: { type: integer }
+        '404':
+          description: Transaksi tidak ditemukan
+        '500':
+          description: Server error
+  /api/address/{address}:
+    get:
+      summary: Mendapatkan informasi alamat
+      parameters:
+        - in: path
+          name: address
+          required: true
+          schema:
+            type: string
+          description: Alamat wallet
+      responses:
+        '200':
+          description: Informasi alamat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  address: { type: string }
+                  balance: { type: string }
+                  transactionCount: { type: integer }
+        '500':
+          description: Server error
